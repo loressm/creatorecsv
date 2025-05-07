@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch("header.html")
         .then(response => response.text())
         .then(data => {
-            console.log("Header caricato correttamente");  // Questo ti aiuterà a capire se il file è caricato
+            console.log("Header caricato correttamente");  // Verifica che l'header sia stato caricato
             document.querySelector("header").innerHTML = data;
 
             // Dopo che l'header è stato caricato, aggiungi gli event listeners
@@ -21,7 +21,7 @@ function addEventListeners() {
         hamburger.addEventListener("click", () => {
             console.log("Hamburger cliccato");  // Verifica che l'hamburger venga cliccato
             const navbar = document.querySelector(".navbar");
-            navbar.classList.toggle("active");
+            navbar.classList.toggle("active"); // Aggiungi la classe per aprire/chiudere il menu
         });
     }
 
@@ -29,9 +29,9 @@ function addEventListeners() {
     const dropdowns = document.querySelectorAll(".navbar .dropdown");
     dropdowns.forEach(dropdown => {
         dropdown.addEventListener("click", (e) => {
-            e.stopPropagation(); // Impedisce la chiusura immediata
+            e.stopPropagation();  // Impedisce la chiusura immediata
             console.log("Dropdown cliccato");  // Verifica che il dropdown venga cliccato
-            dropdown.classList.toggle("active");
+            dropdown.classList.toggle("active"); // Aggiungi la classe per mostrare/nascondere il sottomenu
         });
     });
 }
