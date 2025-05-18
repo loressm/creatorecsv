@@ -1,6 +1,7 @@
-// Carica eventi dal file CSV (Google Sheets)
+// Oggetto per memorizzare gli eventi
 const events = {};
 
+// Carica gli eventi dal file CSV
 fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRqZXO73F9VZzUCOY3yCvwqRsTiWyoNJfi6P3qsKDiytQzw_VezIIuMNCyVq7thA8mt0Y5vQJiFx-tP/pub?gid=0&single=true&output=csv')
     .then(response => response.text())
     .then(data => {
@@ -29,11 +30,17 @@ let selectedDate = null;
 const monthNames = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
 const weekdays = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'];
 
+// Funzione per renderizzare il calendario
 function renderCalendar() {
     const eventBox = document.getElementById('event-box');
     const expandButton = document.getElementById('expand-button');
     const collapseButton = document.getElementById('collapse-button');
-    eventBox.style.display = 'none';
+    const eventContent = document.getElementById('event-content');
+    
+    eventBox.style.display = 'none'; // Nascondi il box eventi inizialmente
+    eventContent.style.maxHeight = '130px'; // Limita l'altezza del contenuto inizialmente
+    expandButton.style.display = 'none'; // Nascondi il tasto + se non necessario
+    collapseButton.style.display = 'none'; // Nascondi il tasto - se non necessario
 
     const firstDay = new Date(currentYear, currentMonth, 1);
     const lastDay = new Date(currentYear, currentMonth + 1, 0);
@@ -42,6 +49,7 @@ function renderCalendar() {
     const numDays = lastDay.getDate();
     let calendarHtml = '';
 
+    // Intestazione del calendario con i giorni della settimana
     for (let i = 0; i < weekdays.length; i++) {
         calendarHtml += `<div class="day">${weekdays[i].slice(0, 3)}</div>`;
     }
@@ -51,6 +59,7 @@ function renderCalendar() {
         calendarHtml += `<div class="day"></div>`;
     }
 
+    // Aggiungi i giorni del mese al calendario
     for (let day = 1; day <= numDays; day++) {
         const dateStr = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
         const hasEvent = events[dateStr] ? 'highlighted' : '';
@@ -64,12 +73,14 @@ function renderCalendar() {
 
     document.getElementById('calendar').innerHTML = calendarHtml;
 
+    // Abilita/disabilita i pulsanti "Mese precedente" e "Mese successivo"
     const prevButton = document.getElementById('prev-month');
     const nextButton = document.getElementById('next-month');
     prevButton.disabled = currentYear === new Date().getFullYear() && currentMonth <= new Date().getMonth();
     nextButton.disabled = currentYear === new Date().getFullYear() && currentMonth === 11;
 }
 
+// Funzione per visualizzare gli eventi quando un giorno viene selezionato
 function showEvent(eventDate) {
     const event = events[eventDate];
     const eventBox = document.getElementById('event-box');
@@ -78,7 +89,7 @@ function showEvent(eventDate) {
     const collapseButton = document.getElementById('collapse-button');
 
     if (event) {
-        eventBox.style.display = 'block';
+        eventBox.style.display = 'block'; // Mostra il box eventi
         eventContent.innerHTML = `
             <strong>Produzione:</strong> ${event.production}<br>
             <strong>Socio:</strong> ${event.member}<br>
@@ -86,76 +97,66 @@ function showEvent(eventDate) {
             <strong>Descrizione:</strong> ${event.description}
         `;
 
-        // Aggiungi eventuali immagini
-        if (event.image) {
-            eventContent.innerHTML += `<img src="${event.image}" alt="Evento Image">`;
-        }
-
-        // Verifica l'altezza del contenuto (testo + immagini)
-        const contentHeight = eventContent.scrollHeight;
-
-        // Se il contenuto è troppo alto, mostra il tasto "+"
-        if (contentHeight > 300) {
-            expandButton.style.display = 'inline-block';
+        // Se il contenuto supera i 200 caratteri, mostriamo il tasto +
+        if (event.description.length > 200) {
+            expandButton.style.display = 'inline-block'; // Mostra il tasto +
         } else {
-            expandButton.style.display = 'none';
-            collapseButton.style.display = 'none';
-            eventBox.style.height = 'auto'; // Nessuna altezza fissa se il contenuto non è troppo lungo
+            expandButton.style.display = 'none'; // Nascondi il tasto +
         }
     } else {
         eventBox.style.display = 'block';
         eventContent.innerHTML = 'Non ci sono eventi questo giorno';
-        expandButton.style.display = 'none';
-        collapseButton.style.display = 'none';
     }
-
-    // Imposta la visibilità dei tasti
-    collapseButton.style.display = 'none'; // Inizialmente il tasto "-" è nascosto
 }
 
-document.getElementById('expand-button').addEventListener('click', function() {
+// Gestisce la selezione di un giorno nel calendario
+document.getElementById('calendar').addEventListener('click', function (event) {
+    if (event.target.classList.contains('day') && event.target.dataset.date) {
+        const newSelectedDate = event.target.dataset.date;
+        if (selectedDate) {
+            const oldSelectedDay = document.querySelector(`[data-date="${selectedDate}"]`);
+            if (oldSelectedDay) {
+                oldSelectedDay.classList.remove('selected');
+            }
+        }
+        event.target.classList.add('selected');
+        selectedDate = newSelectedDate;
+        showEvent(selectedDate);
+    }
+});
+
+// Gestisce la navigazione tra i mesi
+document.getElementById('prev-month').addEventListener('click', function () {
+    if (currentMonth > 0) {
+        currentMonth--;
+        renderCalendar();
+    }
+});
+
+document.getElementById('next-month').addEventListener('click', function () {
+    if (currentMonth < 11) {
+        currentMonth++;
+        renderCalendar();
+    }
+});
+
+// Espande il contenuto dell'evento
+document.getElementById('expand-button').addEventListener('click', function () {
     const eventBox = document.getElementById('event-box');
     const eventContent = document.getElementById('event-content');
     const collapseButton = document.getElementById('collapse-button');
-    this.style.display = 'none'; // Nasconde il tasto "+"
-    eventBox.style.height = 'auto';  // Espandi la height
-    collapseButton.style.display = 'inline-block'; // Mostra il tasto "-"
+    
+    eventBox.classList.add('expanded'); // Espande il box
+    collapseButton.style.display = 'inline-block'; // Mostra il tasto -
+    this.style.display = 'none'; // Nasconde il tasto +
 });
 
-document.getElementById('collapse-button').addEventListener('click', function() {
+// Riduce il contenuto dell'evento
+document.getElementById('collapse-button').addEventListener('click', function () {
     const eventBox = document.getElementById('event-box');
-    const eventContent = document.getElementById('event-content');
     const expandButton = document.getElementById('expand-button');
-    this.style.display = 'none'; // Nasconde il tasto "-"
-    eventBox.style.height = '150px'; // Imposta l'altezza fissa
-    expandButton.style.display = 'inline-block'; // Mostra il tasto "+"
-});
-
-document.getElementById('calendar').addEventListener('click', function(e) {
-    if (e.target.classList.contains('day')) {
-        const selectedDate = e.target.getAttribute('data-date');
-        if (selectedDate) {
-            showEvent(selectedDate);
-        }
-    }
-});
-
-document.getElementById('prev-month').addEventListener('click', function() {
-    if (currentMonth > 0) {
-        currentMonth--;
-    } else {
-        currentMonth = 11;
-        currentYear--;
-    }
-    renderCalendar();
-});
-
-document.getElementById('next-month').addEventListener('click', function() {
-    if (currentMonth < 11) {
-        currentMonth++;
-    } else {
-        currentMonth = 0;
-        currentYear++;
-    }
-    renderCalendar();
+    
+    eventBox.classList.remove('expanded'); // Riduce il box
+    expandButton.style.display = 'inline-block'; // Mostra il tasto +
+    this.style.display = 'none'; // Nasconde il tasto -
 });
