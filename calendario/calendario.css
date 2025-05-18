@@ -1,0 +1,111 @@
+/* Stili generali */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+header, footer {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:disabled {
+    background-color: #ccc;
+}
+
+/* Calendario */
+#calendar-container {
+    margin-top: 30px;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    height: auto; /* Permette al contenitore di adattarsi */
+}
+
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+}
+
+#calendar h2 {
+    font-family: 'Playfair Display', serif;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.day {
+    padding: 15px;
+    text-align: center;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.highlighted {
+    background-color: #ffdd57;
+}
+
+.selected {
+    border: 3px solid #333;
+}
+
+/* Box per gli eventi */
+.event-box {
+    margin-top: 20px;
+    background-color: #e0f7fa;
+    padding: 15px;
+    border-radius: 5px;
+    max-height: 200px;  /* Altezza fissa */
+    overflow-y: auto;    /* Consente lo scroll se il contenuto è troppo lungo */
+    display: none; /* Nasconde inizialmente il box */
+    transition: all 0.3s ease; /* Transizione dolce */
+}
+
+/* Box per le informazioni dell'evento */
+#event-content {
+    max-height: 200px;  /* Limite massimo altezza */
+    overflow-y: auto;    /* Abilita lo scroll verticale se il contenuto è troppo lungo */
+}
+
+/* Responsive: Calendario */
+@media (max-width: 1280px) {
+    #calendar-container {
+        padding: 10px;
+    }
+
+    #calendar {
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+    }
+
+    #calendar .day {
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    #calendar-title {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .prev-next {
+        font-size: 14px;
+        padding: 5px 10px;
+    }
+}
