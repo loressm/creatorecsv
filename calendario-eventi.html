@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario Eventi - Sito Azienda</title>
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css"> <!-- Layout base -->
+    <link rel="stylesheet" href="calendario/calendario.css"> <!-- Stili specifici per la pagina calendario -->
+
+    <!-- Icone -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- JS -->
+    <script src="script.js" defer></script>
+    <script src="calendario/calendario.js" defer></script> <!-- Script calendario -->
+    <script src="header.js" defer></script> <!-- Header dinamico -->
+    <script src="footer.js" defer></script> <!-- Footer dinamico -->
+</head>
+
+<body>
+    <!-- Header dinamico -->
+    <header id="header"></header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Intro -->
+        <section class="intro">
+            <h2>Calendario Eventi</h2>
+            <p>Scopri gli eventi in programma per il mese corrente.</p>
+        </section>
+
+        <!-- Calendario e Box Eventi -->
+        <section id="calendar-container" class="content-grid">
+            <!-- Colonna sinistra: Calendario -->
+            <div id="calendar-left" class="grid-item">
+                <!-- Pulsanti per cambiare mese -->
+                <div class="calendar-controls">
+                    <button id="prev-month" class="prev-next" disabled>Mese Precedente</button>
+                    <button id="next-month" class="prev-next">Mese Successivo</button>
+                </div>
+
+                <!-- Titolo del calendario -->
+                <h2 id="calendar-title">Scopri gli eventi di febbraio 2025</h2>
+
+                <!-- Calendario vero e proprio -->
+                <div id="calendar">
+                    <!-- Celle dei giorni verranno generate via JS -->
+                </div>
+            </div>
+
+            <!-- Colonna destra: Dettagli evento -->
+            <div id="calendar-right" class="grid-item">
+                <div id="event-box" class="event-box">
+                    <!-- Contenuto dinamico degli eventi -->
+                    <p>Seleziona un giorno per vedere gli eventi.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer dinamico -->
+    <footer id="footer"></footer>
+</body>
+</html>
